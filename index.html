@@ -100,7 +100,7 @@
 		// 摄像头初始化
 		function initVideo() {
 			console.log('摄像头初始化')
-			video = document.getElementById("video");
+			video = document.getElementById("#video");
 			videoHeight = 300
 			videoWidth = 300
 			setTimeout(() => {
@@ -178,11 +178,17 @@
 			}
 		}
 		// 开始有画面
-		function videoSuccess(stream) {
+		async function videoSuccess(stream) {
 			//this.mediaStreamTrack = stream;
 			console.log("=====stream")
-			video.srcObject = stream;
-			video.play();
+      if ('srcObject' in video) {
+        video.srcObject = stream;
+      } else {
+        // 在支持srcObject的浏览器上，不再支持使用这种方式
+        video.src = URL.createObjectURL(stream)
+      }
+			
+			await video.play();
 			//$("#max-bg").css('background-color', 'rgba(0,0,0,0)')
 			// 这里处理我的的东西
 		}
