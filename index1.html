@@ -5,8 +5,8 @@
 		<title>人脸识别</title>
 		<script src="./js/tracking-min.js"></script>
 		<script src="./js/face-min.js"></script>
-		<script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js" type="text/javascript" charset="utf-8">
-		</script>
+		<!-- <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js" type="text/javascript" charset="utf-8">
+		</script> -->
 		<script src="https://cdn.bootcdn.net/ajax/libs/vConsole/3.0.0/vconsole.min.js" type="text/javascript"
 			charset="utf-8"></script>
 		<style>
@@ -39,7 +39,7 @@
 			// console.log('Hello world');
 		</script>
 		<script  type="text/javascript">
-			$(function() {
+			(function() {
 				console.log(123123123)
 				// 视频显示
 				var video = document.getElementById('video');
@@ -96,7 +96,7 @@
 				var image = myCanvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
 				// window.location.href = image; // it will save locally  
 				// create temporary link  
-				return
+				// return
 				var tmpLink = document.createElement('a');
 				tmpLink.download = 'image.png'; // set the name of the download file 
 				tmpLink.href = image;
