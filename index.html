@@ -178,7 +178,7 @@
 			}
 		}
 		// 开始有画面
-		async function videoSuccess(stream) {
+		function videoSuccess(stream) {
 			//this.mediaStreamTrack = stream;
 			console.log("=====stream")
       if ('srcObject' in video) {
@@ -188,7 +188,7 @@
         video.src = URL.createObjectURL(stream)
       }
 			
-			await video.play();
+			video.play();
 			//$("#max-bg").css('background-color', 'rgba(0,0,0,0)')
 			// 这里处理我的的东西
 		}
