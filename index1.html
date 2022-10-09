@@ -50,7 +50,7 @@
 			// console.log('Hello world');
 		</script>
 		<script  type="text/javascript">
-			(function() {
+			window.onload = function() {
 				console.log(123123123)
 				// 视频显示
 				var video = document.getElementById('video');
@@ -98,7 +98,7 @@
 						}
 					}
 				});
-			})
+			}
 
 			function saveAsLocalImage() {
 				var myCanvas = document.getElementById("canvas");
