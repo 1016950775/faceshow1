@@ -124,7 +124,7 @@
 							min: 10
 						}
 					}
-				}).then(videoSuccess).catch(videoError);
+				}).then(videoSuccess()).catch(videoError());
 				if (
 					navigator.mediaDevices.getUserMedia ||
 					navigator.getUserMedia ||
@@ -152,8 +152,8 @@
 								}
 							}
 						},
-						videoSuccess,
-						videoError
+						videoSuccess(),
+						videoError()
 					);
 				} else {}
 			}, 300);
