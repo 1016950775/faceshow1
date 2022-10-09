@@ -181,7 +181,7 @@
 		function videoSuccess(stream) {
 			//this.mediaStreamTrack = stream;
 			console.log("=====stream")
-      if ('srcObject' in video) {
+      if (video.srcObject) {
         video.srcObject = stream;
       } else {
         // 在支持srcObject的浏览器上，不再支持使用这种方式
