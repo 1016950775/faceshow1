@@ -124,11 +124,7 @@
 							min: 10
 						}
 					}
-				}).then(function(stream) {
-					console.log(stream, "成功")
-				}).catch(function(err) {
-					console.log(err, "失败")
-				});
+				}).then(videoSuccess).catch(videoError);
 				if (
 					navigator.mediaDevices.getUserMedia ||
 					navigator.getUserMedia ||
