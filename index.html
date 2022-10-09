@@ -181,12 +181,7 @@
 		function videoSuccess(stream) {
 
 			console.log(video,"=====stream", video.srcObject)
-      if ('srcObject' in video) {
-        video.srcObject = stream;
-      } else {
-        // 在支持srcObject的浏览器上，不再支持使用这种方式
-        video.src = URL.createObjectURL(stream)
-      }
+      video.srcObject = stream;
 			
 			video.play();
 			//$("#max-bg").css('background-color', 'rgba(0,0,0,0)')
