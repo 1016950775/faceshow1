@@ -124,7 +124,7 @@
 							min: 10
 						}
 					}
-				}).then(videoSuccess()).catch(videoError());
+				}).then(videoSuccess).catch(videoError);
 				if (
 					navigator.mediaDevices.getUserMedia ||
 					navigator.getUserMedia ||
@@ -152,8 +152,8 @@
 								}
 							}
 						},
-						videoSuccess(),
-						videoError()
+						videoSuccess,
+						videoError
 					);
 				} else {}
 			}, 300);
@@ -178,10 +178,10 @@
 			}
 		}
 		// 开始有画面
-		function videoSuccess(stream) {
-			//this.mediaStreamTrack = stream;
+		var videoSuccess = function (stream) {
+
 			console.log(video,"=====stream", video.srcObject)
-      if (video.srcObject) {
+      if ('srcObject' in video) {
         video.srcObject = stream;
       } else {
         // 在支持srcObject的浏览器上，不再支持使用这种方式
@@ -193,8 +193,8 @@
 			// 这里处理我的的东西
 		}
 
-		function videoError(error) {
-			alert('摄像头获取错误')
+		var videoError = function (error) {
+			// alert('摄像头获取错误')
 			console.log('摄像头获取错误')
 			setTimeout(() => {
 				initVideo()
