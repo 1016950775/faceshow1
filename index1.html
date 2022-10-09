@@ -10,14 +10,26 @@
 		<script src="https://cdn.bootcdn.net/ajax/libs/vConsole/3.0.0/vconsole.min.js" type="text/javascript"
 			charset="utf-8"></script>
 		<style>
+      .mui-content {
+				margin: 0 auto;
+				text-align: center;
+				border: 0px solid red;
+			}
 			video,
 			canvas {
 				position: absolute;
 			}
+
+      video{
+        transform: rotateY(180deg);
+				-webkit-transform: rotateY(180deg);
+				/* Safari 和 Chrome */
+				-moz-transform: rotateY(180deg);
+      }
 		</style>
 	</head>
 	<body>
-		<div class="demo-container">
+		<div class="mui-content">
 			<video id="video" width="400" height="400" style="margin: 0 auto; border-radius: 50%;" preload autoplay loop muted></video>
 			<canvas id="canvas" width="320" height="240"></canvas>
 		</div>
