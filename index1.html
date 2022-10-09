@@ -22,27 +22,19 @@
 			canvas {
 				position: absolute;
         border: 1px solid #000;
-			}
-
-      video{
         top: 0;
         right: 0;
         left: 0;
-      }
-
-      canvas{
-        top: 500px;
-        right: 0;
-        left: 0;
-      }
+        border-radius: 50%;
+			}
 
       
 		</style>
 	</head>
 	<body>
 		<div class="mui-content">
-			<video id="video" width="400" height="500" style="margin: 0 auto; border-radius: 50%;" preload autoplay loop muted></video>
-			<canvas id="canvas" width="320" height="240"></canvas>
+			<video id="video" width="400" height="400"  preload autoplay loop muted></video>
+			<canvas id="canvas" width="400" height="400" ></canvas>
 		</div>
 		<script>
 			// init vConsole，app中查看
