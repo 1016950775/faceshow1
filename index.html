@@ -37,7 +37,7 @@
 		<div class="mui-content">
 			<div style="margin: 40px auto;">
 				<!-- <input type="file" id='image' accept="image/*" capture='user'> -->
-				<video id="video" style="margin: 0 auto; border-radius: 50%;"></video>
+				<video id="video" style="margin: 0 auto; border-radius: 50%;" preload autoplay loop muted playsinline webkit-playsinline="true"></video>
 				<canvas id='canvas' width="300" height="300"
 					style="border: 0px solid red;margin: auto; display: none;"></canvas>
 			</div>
@@ -124,14 +124,13 @@
 							min: 10
 						}
 					}
-				}).then(videoSuccess).catch(videoError);
+				}).then(videoSuccess()).catch(videoError());
 				if (
 					navigator.mediaDevices.getUserMedia ||
 					navigator.getUserMedia ||
 					navigator.webkitGetUserMedia ||
 					navigator.mozGetUserMedia ||
-					navigator.mediaCapabilities ||
-          mediaDevices.getUserMedia
+					navigator.mediaCapabilities
 				) {
 					console.log('调用用户媒体设备, 访问摄像头')
 					//调用用户媒体设备, 访问摄像头
@@ -153,8 +152,8 @@
 								}
 							}
 						},
-						videoSuccess,
-						videoError
+						videoSuccess(),
+						videoError()
 					);
 				} else {}
 			}, 300);
@@ -179,7 +178,7 @@
 			}
 		}
 		// 开始有画面
-		var videoSuccess = function (stream) {
+		function videoSuccess(stream) {
 
 			console.log(video,"=====stream", video.srcObject)
       if ('srcObject' in video) {
@@ -194,7 +193,7 @@
 			// 这里处理我的的东西
 		}
 
-		var videoError = function (error) {
+		function videoError(error) {
 			// alert('摄像头获取错误')
 			console.log('摄像头获取错误')
 			setTimeout(() => {
