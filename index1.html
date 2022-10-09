@@ -110,7 +110,7 @@
       var image = myCanvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
       // window.location.href = image; // it will save locally  
       // create temporary link  
-      // return
+      return
       var tmpLink = document.createElement('a');
       tmpLink.download = 'image.png'; // set the name of the download file 
       tmpLink.href = image;
