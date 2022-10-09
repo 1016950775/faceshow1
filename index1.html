@@ -20,16 +20,28 @@
 			}
 			video,
 			canvas {
-				/* position: absolute; */
+				position: absolute;
         border: 1px solid #000;
 			}
+
+      video{
+        top: 0;
+        right: 0;
+        left: 0;
+      }
+
+      canvas{
+        top: 500px;
+        right: 0;
+        left: 0;
+      }
 
       
 		</style>
 	</head>
 	<body>
 		<div class="mui-content">
-			<video id="video" height="400" style="margin: 0 auto; border-radius: 50%;" preload autoplay loop muted></video>
+			<video id="video" width="400" height="500" style="margin: 0 auto; border-radius: 50%;" preload autoplay loop muted></video>
 			<canvas id="canvas" width="320" height="240"></canvas>
 		</div>
 		<script>
