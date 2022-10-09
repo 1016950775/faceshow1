@@ -37,7 +37,7 @@
 		<div class="mui-content">
 			<div style="margin: 40px auto;">
 				<!-- <input type="file" id='image' accept="image/*" capture='user'> -->
-				<video id="video" style="margin: 0 auto; border-radius: 150px;"></video>
+				<video id="video" style="margin: 0 auto; border-radius: 50%;"></video>
 				<canvas id='canvas' width="300" height="300"
 					style="border: 0px solid red;margin: auto; display: none;"></canvas>
 			</div>
@@ -180,7 +180,7 @@
 		// 开始有画面
 		function videoSuccess(stream) {
 			//this.mediaStreamTrack = stream;
-			console.log("=====stream")
+			console.log(video,"=====stream", video.srcObject)
       if (video.srcObject) {
         video.srcObject = stream;
       } else {
