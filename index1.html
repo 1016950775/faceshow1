@@ -160,7 +160,7 @@
           });
           if (flag) {
             console.log("拍照");
-            context.drawImage(video, 0, 0, 320, 240);
+            context.drawImage(video, 0, 0, 300, 300);
             saveAsLocalImage();
             context.clearRect(0, 0, canvas.width, canvas.height);
             flag = false;
@@ -181,7 +181,7 @@
       var image = myCanvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
       // window.location.href = image; // it will save locally  
       // create temporary link  
-      return
+      // return
       var tmpLink = document.createElement('a');
       tmpLink.download = 'image.png'; // set the name of the download file 
       tmpLink.href = image;
