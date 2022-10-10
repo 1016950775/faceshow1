@@ -12,6 +12,7 @@
     </script>
   <script src="https://cdn.bootcdn.net/ajax/libs/vConsole/3.0.0/vconsole.min.js" type="text/javascript"
     charset="utf-8"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <style>
     * {
       margin: 0;
@@ -118,18 +119,20 @@
 			// console.log('Hello world');
   </script>
   <script type="text/javascript">
+
     $(function () {
       console.log(123123123)
+      // 获取token
+      getToken()
 
       // 视频显示
       var video = document.getElementById('video');
-      console.log(video, "获取到的VIDEO")
       video.height = $(window).height();
       video.width = $(window).width();
 
       //   绘图
       var canvas = document.getElementById('canvas');
-      
+
       var context = canvas.getContext('2d');
       var time = 10000;
       var tracker = new tracking.ObjectTracker('face');
@@ -174,6 +177,7 @@
       });
     })
 
+    // 保存照片
     function saveAsLocalImage() {
       var myCanvas = document.getElementById("canvas");
       // here is the most important part because if you dont replace you will get a DOM 18 exception.  
@@ -190,6 +194,55 @@
       document.body.appendChild(tmpLink);
       tmpLink.click();
       document.body.removeChild(tmpLink);
+    }
+
+    function axiosget() {
+      axios.get('/user', {
+        params: {
+          ID: 12345
+        }
+      }).then(function (response) {
+        console.log(response);
+      }).catch(function (error) {
+        console.log(error);
+      });
+    }
+
+    function axiospost() {
+      axios.post('/user', {
+        firstName: 'Fred',
+        lastName: 'Flintstone'
+      }).then(function (response) {
+        console.log(response);
+      }).catch(function (error) {
+        console.log(error);
+      });
+    }
+
+    function getToken() {
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', 'https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id=0DejxuyH80NyLe6Mv9vpFld6&client_secret=PnZPuEmoxC8xD01WGOGKxa0xpzvb3zeI');
+      xhr.setRequestHeader('Content-type', 'application/json')
+      xhr.send();
+      xhr.onreadystatechange = function () {
+        console.log(xhr, "ajax请求")
+        // if (xhr.readyState == 4) {
+        //   if (xhr.status == 200) {
+        //     console.log(JSON.parse(xhr.responseText).msg, "token123")
+        //     // popShow(JSON.parse(xhr.responseText).msg)
+        //     // if (JSON.parse(xhr.responseText).code == 0) {
+        //     //   Popsubmit()
+        //     // }
+        //   }
+        // }
+      }
+
+
+      // axios.get('https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id=0DejxuyH80NyLe6Mv9vpFld6&client_secret=PnZPuEmoxC8xD01WGOGKxa0xpzvb3zeI').then(function (res) {
+      //   console.log(res, "获取的token")
+      // }).catch(function (error) {
+      //   console.log(error, "token失败");
+      // });
     }
   </script>
 
