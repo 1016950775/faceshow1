@@ -1,29 +1,154 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html>
 
 <head>
-  <meta charset="UTF-8">
-  <title>人脸采集</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" type="text/css" href="./css/index.css" />
+  <meta charset="utf-8">
+  <title>trackingJS人脸识别</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+  <script src="./js/tracking-min.js"></script>
+  <script src="./js/face-min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js" type="text/javascript"
     charset="utf-8">
     </script>
-  <!-- uni 的 SDK -->
-  <script type="text/javascript" src="https://js.cdn.aliyun.dcloud.net.cn/dev/uni-app/uni.webview.1.5.2.js">
-  </script>
   <script src="https://cdn.bootcdn.net/ajax/libs/vConsole/3.0.0/vconsole.min.js" type="text/javascript"
     charset="utf-8"></script>
-  <script>
-    // init vConsole，app中查看
-    var vConsole = new VConsole();
-			// console.log('Hello world');
-  </script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
     .mui-content {
-      margin: 0 auto;
+      width: 100%;
+      height: 100%;
       text-align: center;
       border: 0px solid red;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    video,
+    canvas {
+      margin: 0;
+      padding: 0;
+      position: absolute;
+      top: 0;
+      right: 0;
+      left: 0;
+      bottom: 0;
+    }
+
+    video {
+      /* object-fit: fill|contain|cover|scale-down|none|initial|inherit;
+      fill	默认，不保证保持原有的比例，内容拉伸填充整个内容容器。
+      contain	保持原有尺寸比例。内容被缩放。
+      cover	保持原有尺寸比例。但部分内容可能被剪切。
+      none	保留原有元素内容的长度和宽度，也就是说内容不会被重置。
+      scale-down	保持原有尺寸比例。内容的尺寸与 none 或 contain 中的一个相同，取决于它们两个之间谁得到的对象尺寸会更小一些。
+      initial	设置为默认值。
+      inherit	从该元素的父元素继承属性。 */
+      object-fit: cover;
+      bject-position: center center;
+    }
+
+    canvas {
+      top: 23px;
+      left: 50%;
+      transform: translateX(-50%);
+      /* background-color: aqua; */
+      border-radius: 50%;
+    }
+
+    #mask {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      margin: 0 auto;
+      overflow: hidden;
+    }
+
+    #mask:after {
+      content: '';
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-radius: 50%;
+      width: 300px;
+      height: 300px;
+      border: 3px solid white;
+      box-shadow: 0px 0px 0px 2000px rgba(0, 0, 0, .6);
+    }
+
+    /* #mask {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 500px;
+      height: 500px;
+      border-radius: 50%;
+      z-index: 1;
+      border: 3px solid white;
+      box-shadow: 0 0 0 2000px rgba(0, 0, 0, 0.7);
+    } */
+
+    .from {
+      position: absolute;
+      right: 0;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      height: 200px;
+      background-color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    input {
+      width: 80%;
+      outline: medium;
+      border: 1px solid #eaeaea;
+      margin: 5px 0;
+      height: 50px;
+      border-radius: 10px;
+      padding: 0 10px;
+      box-sizing: border-box;
+      font-size: 18px;
+    }
+
+    .pop {
+      width: 80%;
+      position: fixed;
+      top: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 999;
+      display: none;
+      background-color: #4c4c4c;
+      padding: 10px;
+      box-sizing: border-box;
+      word-wrap: break-word;
+      word-break: break-all;
+      color: #fff;
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    .tjbtn {
+      display: block;
+      width: 320px;
+      height: 40px;
+      background: #0085ff;
+      border-radius: 34px;
+      border: none;
+      color: #fff;
+      margin: 0 auto;
     }
 
     /*摄像头翻转180度*/
@@ -36,192 +161,215 @@
   </style>
 </head>
 
-<body class='body'>
+<body>
   <div class="mui-content">
-    <div style="margin: 40px auto;">
-      <!-- <input type="file" id='image' accept="image/*" capture='user'> -->
-      <video id="video" style="margin: 0 auto; border-radius: 50%;" playsinline webkit-playsinline></video>
-      <canvas id='canvas' width="300" height="300" style="border: 0px solid red;margin: auto; display: none;"></canvas>
+    <video id="video" width="300" height="300" preload autoplay loop muted playsinline webkit-playsinline="true"
+      x5-video-player-type="h5-page"></video>
+    <canvas id="canvas" width="300" height="300"></canvas>
+    <!-- <div id="mask"></div> -->
+
+    <div class="from">
+      <input type="text" placeholder="请输入姓名" name="name">
+      <input type="number" maxlength="11" placeholder="请输入手机号" name="phone">
+      <button class="tjbtn" onclick="Submit()">注册</button>
     </div>
-    <div class="msg-box">
-      <div class="msg">
-        1、请保证本人验证。
-      </div>
-      <div class="msg">
-        2、请使头像正面位于画框中。
-      </div>
-      <div class="msg">
-        3、请使头像尽量清晰。
-      </div>
-      <div class="msg">
-        4、请保证眼镜不反光，双眼可见。
-      </div>
-      <div class="msg">
-        5、请保证无墨镜，口罩，面膜等遮挡物。
-      </div>
-      <div class="msg">
-        6、请不要化浓妆，不要戴帽子。
-      </div>
-    </div>
-    <div style="width: 80%; position: absolute; bottom: 20px; left: 50%; transform: translate(-50%, -50%);">
-      <div class="but" id="start">采集本人人脸</div>
-    </div>
+
+    <div class="pop"></div>
   </div>
-</body>
-<script type="text/javascript">
-  var video, canvas, vendorUrl, interval, videoHeight, videoWidth, time = 0;
-  // 获取webview页面数据
-  // var data = JSON.parse(getUrlParam('data'))
-  // var info = data.info;
-  // var userInfo = data.userInfo;
-  // const userId = data.userId; // 当前登录用户id
-  $(function () {
-    // 初始化
-    initVideo()
-    // uni.app事件
-    document.addEventListener('UniAppJSBridgeReady', function () {
-      uni.getEnv(function (res) {
-        console.log('当前环境：' + JSON.stringify(res));
+  <script>
+    // init vConsole，app中查看
+    var vConsole = new VConsole();
+			// console.log('Hello world');
+  </script>
+  <script type="text/javascript">
+    var faceData = []
+    $(function () {
+      console.log(123123123)
+      // 视频显示
+      var video = document.getElementById('video');
+      video.height = $(window).height() - 210;
+      video.width = $(window).width();
+
+      //   绘图
+      var canvas = document.getElementById('canvas');
+      canvas.height = $(window).height() - 210;
+      canvas.width = $(window).width();
+
+      var context = canvas.getContext('2d');
+      var time = 5000;
+      var tracker = new tracking.ObjectTracker('face');
+      //   设置识别的放大比例
+      tracker.setInitialScale(4);
+      //   设置步长
+      tracker.setStepSize(2);
+      //   边缘密度
+      tracker.setEdgesDensity(0.1);
+      //   启动摄像头，并且识别视频内容
+      var trackerTask = tracking.track('#video', tracker, {
+        camera: true
       });
-      setInterval(() => {
-        uni.postMessage({
-          data: {
-            action: 'postMessage'
-          }
-        });
-      }, 1000)
-    });
-  })
-  // 获取url携带的数据
-  function getUrlParam(name) {
-    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
-    var r = window.location.search.substr(1).match(reg);
-    if (r != null) return unescape(r[2]);
-    return null;
-  }
-  // 摄像头初始化
-  function initVideo() {
-    console.log('摄像头初始化')
-    video = document.getElementById("video");
-    videoHeight = 300
-    videoWidth = 300
-    setTimeout(() => {
-      console.log(navigator, "111111111111")
-      console.log(navigator.mediaDevices, "摄像头个数")
-      navigator.mediaDevices.getUserMedia({
-        audio: false,
-        video: {
-          width: {
-            ideal: videoWidth,
-            max: videoWidth
-          },
-          height: {
-            ideal: videoHeight,
-            max: videoHeight
-          },
-          facingMode: 'user', //前置摄像头
-          // facingMode: { exact: "environment" }, //后置摄像头
-          frameRate: {
-            ideal: 30,
-            min: 10
+
+      // 获取token
+      // getToken()
+
+      var flag = true;
+      tracker.on('track', function (event) {
+        if (event.data.length === 0) {
+          // console.log('未检测到人脸')
+          context.clearRect(0, 0, $(window).width(), $(window).height() - 210);
+        } else if (event.data.length > 1) {
+          // console.log('检测到多张人脸')
+        } else {
+          context.clearRect(0, 0, $(window).width(), $(window).height() - 210);
+          event.data.forEach(function (rect) {
+            context.strokeStyle = '#ff0000';
+            context.strokeRect(rect.x, rect.y, rect.width, rect.height);
+            context.fillStyle = "#ff0000";
+            //console.log(rect.x, rect.width, rect.y, rect.height);
+          });
+          if (flag) {
+            console.log("拍照");
+            context.drawImage(video, 0, 0, $(window).width(), $(window).height() - 210);
+            saveAsLocalImage();
+            context.clearRect(0, 0, $(window).width(), $(window).height() - 210);
+            flag = false;
+            setTimeout(function () {
+              flag = true;
+            }, time);
+          } else {
+            //console.log("冷却中");
           }
         }
-      }).then(videoSuccess).catch(videoError);
-      if (
-        navigator.mediaDevices.getUserMedia ||
-        navigator.getUserMedia ||
-        navigator.webkitGetUserMedia ||
-        navigator.mozGetUserMedia ||
-        navigator.mediaCapabilities
-      ) {
-        console.log('调用用户媒体设备, 访问摄像头')
-        //调用用户媒体设备, 访问摄像头
-        getUserMedia({
-          video: {
-            width: {
-              ideal: videoWidth,
-              max: videoWidth
-            },
-            height: {
-              ideal: videoHeight,
-              max: videoHeight
-            },
-            facingMode: 'user', //前置摄像头
-            // facingMode: { exact: "environment" }, //后置摄像头
-            frameRate: {
-              ideal: 30,
-              min: 10
-            }
-          }
-        },
-          videoSuccess,
-          videoError
-        );
-      } else { }
-    }, 300);
-  }
-  // 获取用户设备
-  function getUserMedia(constraints, success, error) {
-    if (navigator.mediaDevices.getUserMedia) {
-      //最新的标准API
-      navigator.mediaDevices
-        .getUserMedia(constraints)
-        .then(success)
-        .catch(error);
-    } else if (navigator.webkitGetUserMedia) {
-      //webkit核心浏览器
-      navigator.webkitGetUserMedia(constraints, success, error);
-    } else if (navigator.mozGetUserMedia) {
-      //firfox浏览器
-      navigator.mozGetUserMedia(constraints, success, error);
-    } else if (navigator.getUserMedia) {
-      //旧版API
-      navigator.getUserMedia(constraints, success, error);
+      });
+    })
+
+    // 保存照片
+    function saveAsLocalImage() {
+      var myCanvas = document.getElementById("canvas");
+      // here is the most important part because if you dont replace you will get a DOM 18 exception.  
+      // var image = myCanvas.toDataURL("image/png").replace("image/png", "image/octet-stream;Content-Disposition: attachment;filename=foobar.png");  
+      // var image = myCanvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+
+      var image = myCanvas.toDataURL("image/jpeg").split(',')[1]
+      // window.location.href = image; // it will save locally  
+      // create temporary link  
+      faceData.push(image)
+      // return;
+      // var tmpLink = document.createElement('a');
+      // tmpLink.download = 'image.png'; // set the name of the download file 
+      // tmpLink.href = image;
+
+      // // temporarily add link to body and initiate the download  
+      // document.body.appendChild(tmpLink);
+      // tmpLink.click();
+      // document.body.removeChild(tmpLink);
     }
-  }
-  // 开始有画面
-  function videoSuccess(stream) {
 
-    console.log(video, "=====stream")
-    try {
-      video.srcObject = stream
-    } catch (error) {
-      video.src = window.URL.createObjectURL(stream);
+    function Submit() {
+      var name = document.getElementsByName('name')[0].value
+      var phone = document.getElementsByName('phone')[0].value
+      if (!name) {
+        popShow("请填写姓名")
+        return;
+      }
+
+      if (!phone) {
+        popShow("请填写手机号")
+        return;
+      }
+
+      if (!faceData.length) {
+        popShow("暂无抓拍的照片")
+        return;
+      }
+
+      console.log(faceData, "获取的base64")
+      axiospost(faceData.toString(), name, phone)
     }
-    // video.srcObject = stream;
 
-    video.play();
-    //$("#max-bg").css('background-color', 'rgba(0,0,0,0)')
-    // 这里处理我的的东西
-  }
+    function popShow(text) {
+      document.getElementsByClassName('pop')[0].innerHTML = text
+      document.getElementsByClassName('pop')[0].style.display = 'block'
+      setTimeout(() => {
+        document.getElementsByClassName('pop')[0].style.display = 'none'
+      }, 2000)
+    }
 
-  function videoError(error) {
-    // alert('摄像头获取错误')
-    console.log(error,'摄像头获取错误')
-    setTimeout(() => {
-      initVideo()
-    }, 6000)
-  }
-  // 单次拍照
-  function getFaceImgBase64() {
-    canvas = document.getElementById('canvas');
-    //绘制canvas图形
-    canvas.getContext('2d').drawImage(video, 0, 0, 300, 300);
-    //把canvas图像转为img图片
-    var bdata = canvas.toDataURL("image/jpeg");
-    //img.src = canvas.toDataURL("image/png");
-    return bdata.split(',')[1]; //照片压缩成base位数据
-  }
-  $('#start').on('click', function () {
-    time = 0;
-    console.log("开始人脸采集，请正对屏幕");
-    faceGather();
-  })
-  // 人脸采集
-  function faceGather() {
-    const faceImgBase64 = getFaceImgBase64();
-    console.log(faceImgBase64);
-  }
-</script>
+    function Popsubmit() {
+      document.getElementsByName('name')[0].value = ""
+      document.getElementsByName('phone')[0].value = ""
+    }
+
+    function axiosget() {
+      axios.get('/user', {
+        params: {
+          ID: 12345
+        }
+      }).then(function (response) {
+        console.log(response);
+      }).catch(function (error) {
+        console.log(error);
+      });
+    }
+
+    function axiospost(data, name, phone) {
+      axios.post('https://aip.baidubce.com/rest/2.0/face/v3/faceset/user/add?access_token=24.fbe7c4d54f625204dde6181028035c48.2592000.1667978731.282335-27344413', {
+        image: data,
+        image_type: 'BASE64',
+        group_id: "20221009",
+        user_id: phone,
+        user_info: name,
+        quality_control: "LOW",
+      }).then(function (res) {
+        console.log(res, "注册成功");
+        faceData = []
+        if (res.data.result) {
+          popShow("注册成功")
+        } else {
+          popShow(res.data.error_msg)
+        }
+      }).catch(function (error) {
+        console.log(error, "注册失败");
+        popShow("注册失败")
+      });
+    }
+
+    function getToken() {
+      // var xhr = new XMLHttpRequest();
+      // xhr.open('POST', 'https://aip.baidubce.com/oauth/2.0/token', true);
+      // xhr.send('grant_type=client_credentials&client_id=0DejxuyH80NyLe6Mv9vpFld6&client_secret=PnZPuEmoxC8xD01WGOGKxa0xpzvb3zeI')
+      // xhr.onreadystatechange = function () {
+      //   console.log(xhr, "ajax请求")
+      //   // if (xhr.readyState == 4) {
+      //   //   if (xhr.status == 200) {
+      //   //     console.log(JSON.parse(xhr.responseText).msg, "token123")
+      //   //     // popShow(JSON.parse(xhr.responseText).msg)
+      //   //     // if (JSON.parse(xhr.responseText).code == 0) {
+      //   //     //   Popsubmit()
+      //   //     // }
+      //   //   }
+      //   // }
+      // }
+
+
+      axios.get('https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id=0DejxuyH80NyLe6Mv9vpFld6&client_secret=PnZPuEmoxC8xD01WGOGKxa0xpzvb3zeI').then(function (res) {
+        console.log(res, "获取的token")
+      }).catch(function (error) {
+        console.log(error, "token失败");
+      });
+
+      //   axios.post('https://aip.baidubce.com/oauth/2.0/token', {
+      //     grant_type:'client_credentials',
+      //     client_id:'0DejxuyH80NyLe6Mv9vpFld6',
+      //     client_secret:'PnZPuEmoxC8xD01WGOGKxa0xpzvb3zeI'
+      //   }).then(function (res) {
+      //     console.log(res, "获取的token")
+      //   }).catch(function (error) {
+      //     console.log(error, "token失败");
+      //   });
+    }
+  </script>
+
+</body>
 
 </html>
