@@ -40,12 +40,34 @@
     }
 
     video {
+      /* object-fit: fill|contain|cover|scale-down|none|initial|inherit;
+      fill	默认，不保证保持原有的比例，内容拉伸填充整个内容容器。
+      contain	保持原有尺寸比例。内容被缩放。
+      cover	保持原有尺寸比例。但部分内容可能被剪切。
+      none	保留原有元素内容的长度和宽度，也就是说内容不会被重置。
+      scale-down	保持原有尺寸比例。内容的尺寸与 none 或 contain 中的一个相同，取决于它们两个之间谁得到的对象尺寸会更小一些。
+      initial	设置为默认值。
+      inherit	从该元素的父元素继承属性。 */
       object-fit: cover;
       bject-position: center center;
     }
 
-    canvas{
+    canvas {
       background-color: rgba(0, 0, 0, .5);
+    }
+
+    #mask {
+      width: 100px;
+      height: 100px;
+      position: absolute;
+      top: 0;
+      right: 0;
+      left: 0;
+      bottom: 0;
+      background: #000;
+      /*CSS Hack,只能对ie9以下浏览器ie6,ie7,ie8有效，否侧ie10,FF,Cherome会失去透明效果*/
+      filter: Alpha(opacity=60);
+      /*只对ie7,ie8有效*/
     }
 
     /*摄像头翻转180度*/
@@ -63,6 +85,7 @@
     <video id="video" width="250" height="400" preload autoplay loop muted playsinline webkit-playsinline="true"
       x5-video-player-type="h5-page"></video>
     <canvas id="canvas" width="250" height="400"></canvas>
+    <div id="mask"></div>
   </div>
   <script>
     // init vConsole，app中查看
@@ -72,6 +95,11 @@
   <script type="text/javascript">
     $(function () {
       console.log(123123123)
+      // 蒙层
+      // var mask = document.getElementById('mask');
+      // mask.height = $(window).height();
+      // mask.width = $(window).width();
+
       // 视频显示
       var video = document.getElementById('video');
       console.log(video, "获取到的VIDEO")
