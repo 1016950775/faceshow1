@@ -54,8 +54,6 @@
     }
 
     canvas {
-      width: 300px;
-      height: 300px;
       top: 23px;
       left: 50%;
       transform: translateX(-50%);
@@ -109,9 +107,9 @@
 
 <body>
   <div class="mui-content">
-    <video id="video" width="250" height="400" preload autoplay loop muted playsinline webkit-playsinline="true"
+    <video id="video" width="300" height="300" preload autoplay loop muted playsinline webkit-playsinline="true"
       x5-video-player-type="h5-page"></video>
-    <canvas id="canvas" width="250" height="400"></canvas>
+    <canvas id="canvas" width="300" height="300"></canvas>
     <div id="mask"></div>
   </div>
   <script>
@@ -131,9 +129,7 @@
 
       //   绘图
       var canvas = document.getElementById('canvas');
-      canvas.height = $(window).height();
-      canvas.width = $(window).width();
-      // return
+      
       var context = canvas.getContext('2d');
       var time = 10000;
       var tracker = new tracking.ObjectTracker('face');
