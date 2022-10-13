@@ -232,9 +232,12 @@
             //console.log(rect.x, rect.width, rect.y, rect.height);
           });
           if (flag) {
-            console.log("拍照");
-            context.drawImage(video, 0, 0, windowWidth, windowHeight);
-            saveAsLocalImage();
+            if(!faceData.length){
+              console.log("拍照");
+              context.drawImage(video, 0, 0, windowWidth, windowHeight);
+              saveAsLocalImage();
+            }
+            
             // context.clearRect(0, 0, windowWidth, windowHeight);
             // flag = false;
             // setTimeout(function () {
