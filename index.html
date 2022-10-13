@@ -244,6 +244,7 @@
         } else if (event.data.length > 1) {
           // console.log('检测到多张人脸')
         } else {
+          if(photo) return
           context.clearRect(0, 0, windowWidth, windowHeight);
           event.data.forEach(function (rect) {
             context.strokeStyle = '#ff0000';
