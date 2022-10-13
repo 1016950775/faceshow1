@@ -154,7 +154,6 @@
       /* Safari 和 Chrome */
       -moz-transform: rotateY(180deg);
     }
-
   </style>
 </head>
 
@@ -180,7 +179,6 @@
 			// console.log('Hello world');
   </script>
   <script type="text/javascript">
-    var faceData = []
     var faceSet = false
     var windowWidth = 0
     var windowHeight = 0
@@ -237,31 +235,26 @@
             context.strokeRect(rect.x, rect.y, rect.width, rect.height);
             context.fillStyle = "#ff0000";
             //console.log(rect.x, rect.width, rect.y, rect.height);
-          });
-          if (flag) {
-            // if(!faceData.length){
-            //   console.log("拍照");
-            //   context.drawImage(video, 0, 0, windowWidth, windowHeight);
-            //   saveAsLocalImage();
-            // }
 
-            if (!photo) {
+            if (!photo && rect.x > 0) {
               setTimeout(function () {
                 console.log("拍照");
                 context.drawImage(video, 0, 0, windowWidth, windowHeight);
                 saveAsLocalImage();
               }, 1000);
-
             }
+          });
 
-            // context.clearRect(0, 0, windowWidth, windowHeight);
-            // flag = false;
-            // setTimeout(function () {
-            //   flag = true;
-            // }, time);
-          } else {
-            //console.log("冷却中");
-          }
+
+          // if (flag) {
+          //   context.clearRect(0, 0, windowWidth, windowHeight);
+          //   flag = false;
+          //   setTimeout(function () {
+          //     flag = true;
+          //   }, time);
+          // } else {
+          //   //console.log("冷却中");
+          // }
         }
       });
     })
@@ -278,7 +271,6 @@
       // window.location.href = image; // it will save locally  
       // create temporary link  
       popShow("已拍照")
-      // faceData.push(image)
       photo = image
       // console.log(image1, "获取的地址")
       // document.getElementsByClassName('image')[0].style.display = 'block'
@@ -314,17 +306,11 @@
         return;
       }
 
-      // if (!faceData.length) {
-      //   popShow("暂无抓拍的照片")
-      //   return;
-      // }
-
       if (!photo) {
         popShow("暂无抓拍的照片")
         return;
       }
 
-      // axiospost(faceData.toString(), name, phone)
       axiospost(photo, name, phone)
     }
 
@@ -363,7 +349,6 @@
         quality_control: "LOW",
       }).then(function (res) {
         console.log(res, "注册成功");
-        // faceData = []
         phone = ""
         if (res.data.result) {
           popShow("注册成功")
