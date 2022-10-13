@@ -54,6 +54,10 @@
       bject-position: center center;
     }
 
+    canvas{
+      z-index: 99;
+    }
+
     #mask {
       position: absolute;
       width: 100%;
@@ -156,7 +160,7 @@
   <div class="mui-content">
     <video id="video" width="300" height="300" preload autoplay loop muted playsinline webkit-playsinline="true"
       x5-video-player-type="h5-page"></video>
-    <canvas id="canvas" width="300" height="300"></canvas>
+    <canvas id="canvas" width="300" height="300" onclick="changeCanvas()"></canvas>
     <!-- <div id="mask"></div> -->
 
     <div class="from">
@@ -177,6 +181,8 @@
     var faceSet = false
     var windowWidth = 0
     var windowHeight = 0
+
+    var tracker = null
     $(function () {
       console.log(123123123)
 
@@ -195,7 +201,7 @@
 
       var context = canvas.getContext('2d');
       var time = 3000;
-      var tracker = new tracking.ObjectTracker('face');
+      tracker = new tracking.ObjectTracker('face');
       //   设置识别的放大比例
       tracker.setInitialScale(1);
       //   设置步长
@@ -229,11 +235,11 @@
             console.log("拍照");
             context.drawImage(video, 0, 0, windowWidth, windowHeight);
             saveAsLocalImage();
-            context.clearRect(0, 0, windowWidth, windowHeight);
-            flag = false;
-            setTimeout(function () {
-              flag = true;
-            }, time);
+            // context.clearRect(0, 0, windowWidth, windowHeight);
+            // flag = false;
+            // setTimeout(function () {
+            //   flag = true;
+            // }, time);
           } else {
             //console.log("冷却中");
           }
@@ -263,6 +269,11 @@
       // document.body.appendChild(tmpLink);
       // tmpLink.click();
       // document.body.removeChild(tmpLink);
+    }
+
+    // 重拍
+    function changeCanvas(){
+
     }
 
     // 注册
