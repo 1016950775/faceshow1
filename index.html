@@ -282,15 +282,15 @@
       // here is the most important part because if you dont replace you will get a DOM 18 exception.  
       // var image = myCanvas.toDataURL("image/png").replace("image/png", "image/octet-stream;Content-Disposition: attachment;filename=foobar.png");  
 
-      // var image = myCanvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+      var image1 = myCanvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
 
       var image = myCanvas.toDataURL("image/jpeg").split(',')[1]
-      var image1 = myCanvas.toDataURL("image/jpeg")
       // window.location.href = image; // it will save locally  
       // create temporary link  
       popShow("已拍照")
       // faceData.push(image)
       photo = image1
+      console.log(image1,"获取的地址")
       document.getElementsByClassName('image')[0].style.display = 'block'
       // return;
       // var tmpLink = document.createElement('a');
