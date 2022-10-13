@@ -1,17 +1,18 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh">
 
 <head>
   <meta charset="UTF-8">
   <title>人脸采集</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" type="text/css" href="./css/index.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js" type="text/javascript"
     charset="utf-8">
     </script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <!-- uni 的 SDK -->
-  <script type="text/javascript" src="https://js.cdn.aliyun.dcloud.net.cn/dev/uni-app/uni.webview.1.5.2.js">
-  </script>
+  <!-- <script type="text/javascript" src="https://js.cdn.aliyun.dcloud.net.cn/dev/uni-app/uni.webview.1.5.2.js">
+  </script> -->
   <script src="https://cdn.bootcdn.net/ajax/libs/vConsole/3.0.0/vconsole.min.js" type="text/javascript"
     charset="utf-8"></script>
   <script>
@@ -33,15 +34,46 @@
       /* Safari 和 Chrome */
       -moz-transform: rotateY(180deg);
     }
+
+    .pop {
+      width: 80%;
+      position: fixed;
+      top: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 999;
+      display: none;
+      background-color: #4c4c4c;
+      padding: 10px;
+      box-sizing: border-box;
+      word-wrap: break-word;
+      word-break: break-all;
+      color: #fff;
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    input {
+      outline: medium;
+      border: 1px solid #eaeaea;
+      margin: 5px 0;
+      height: 40px;
+      border-radius: 10px;
+      padding: 0 10px;
+      box-sizing: border-box;
+      font-size: 18px;
+    }
   </style>
 </head>
 
 <body class='body'>
   <div class="mui-content">
-    <div style="margin: 40px auto;">
+    <div style="margin: 40px auto 10px auto;">
       <!-- <input type="file" id='image' accept="image/*" capture='user'> -->
-      <video id="video" style="margin: 0 auto; border-radius: 50%;" playsinline webkit-playsinline></video>
-      <canvas id='canvas' width="300" height="300" style="border: 0px solid red;margin: auto; display: none;"></canvas>
+      <video id="video" class="videomodel" style="margin: 0 auto; border-radius: 50%;display: block;" playsinline
+        webkit-playsinline></video>
+      <canvas id='canvas' class="canvasmodel" width="300" height="300"
+        style="border: 0px solid red;margin: auto; display: none;"></canvas>
     </div>
     <div class="msg-box">
       <div class="msg">
@@ -62,14 +94,26 @@
       <div class="msg">
         6、请不要化浓妆，不要戴帽子。
       </div>
+      <div class="msg">
+        7、点击预览图重新拍照
+      </div>
+      <div class="msg">
+        <input type="text" placeholder="请输入姓名" name="name">
+      </div>
+      <div class="msg">
+        <input type="number" :maxlength="11" placeholder="请输入手机号" name="phone">
+      </div>
     </div>
-    <div style="width: 80%; position: absolute; bottom: 20px; left: 50%; transform: translate(-50%, -50%);">
-      <div class="but" id="start">采集本人人脸</div>
+    <div style="width: 80%; margin: 10px auto 0 auto;">
+      <button style="height: 40px;margin-bottom: 10px;" class="but" id="start">采集本人人脸</button>
+      <button style="height: 40px;" class="but" id="register">注册</button>
     </div>
+
+    <div class="pop"></div>
   </div>
 </body>
 <script type="text/javascript">
-  var video, canvas, vendorUrl, interval, videoHeight, videoWidth, time = 0;
+  var video, canvas, photoImg, vendorUrl, interval, videoHeight, videoWidth, time = 0;
   // 获取webview页面数据
   // var data = JSON.parse(getUrlParam('data'))
   // var info = data.info;
@@ -79,26 +123,26 @@
     // 初始化
     initVideo()
     // uni.app事件
-    document.addEventListener('UniAppJSBridgeReady', function () {
-      uni.getEnv(function (res) {
-        console.log('当前环境：' + JSON.stringify(res));
-      });
-      setInterval(() => {
-        uni.postMessage({
-          data: {
-            action: 'postMessage'
-          }
-        });
-      }, 1000)
-    });
+    // document.addEventListener('UniAppJSBridgeReady', function () {
+    //   uni.getEnv(function (res) {
+    //     console.log('当前环境：' + JSON.stringify(res));
+    //   });
+    //   setInterval(() => {
+    //     uni.postMessage({
+    //       data: {
+    //         action: 'postMessage'
+    //       }
+    //     });
+    //   }, 1000)
+    // });
   })
   // 获取url携带的数据
-  function getUrlParam(name) {
-    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
-    var r = window.location.search.substr(1).match(reg);
-    if (r != null) return unescape(r[2]);
-    return null;
-  }
+  // function getUrlParam(name) {
+  //   var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+  //   var r = window.location.search.substr(1).match(reg);
+  //   if (r != null) return unescape(r[2]);
+  //   return null;
+  // }
   // 摄像头初始化
   function initVideo() {
     console.log('摄像头初始化')
@@ -106,8 +150,6 @@
     videoHeight = 300
     videoWidth = 300
     setTimeout(() => {
-      console.log(navigator, "111111111111")
-      console.log(navigator.mediaDevices, "摄像头个数")
       navigator.mediaDevices.getUserMedia({
         audio: false,
         video: {
@@ -197,7 +239,7 @@
 
   function videoError(error) {
     // alert('摄像头获取错误')
-    console.log(error,'摄像头获取错误')
+    console.log(error, '摄像头获取错误')
     setTimeout(() => {
       initVideo()
     }, 6000)
@@ -212,15 +254,96 @@
     //img.src = canvas.toDataURL("image/png");
     return bdata.split(',')[1]; //照片压缩成base位数据
   }
+
+  // 采集人脸
   $('#start').on('click', function () {
     time = 0;
     console.log("开始人脸采集，请正对屏幕");
-    faceGather();
+    cjChange('block')
   })
+
+  // 注册
+  $('#register').on('click', function () {
+    faceGather()
+  })
+
+  // 重新采集人脸
+  $('#canvas').on('click', function () {
+    cjChange()
+  })
+
+  function cjChange(val) {
+    if (val) {
+      photoImg = getFaceImgBase64();
+      // document.getElementsByClassName('canvasmodel').style.display = 'block'
+      // document.getElementsByClassName('videomodel').style.display = 'none'
+
+      $('#canvas').css("display", "block")
+      $('#video').css("display", "none")
+    } else {
+      photoImg = ''
+      // document.getElementsByClassName('canvasmodel').style.display = 'none'
+      // document.getElementsByClassName('videomodel').style.display = 'block'
+
+      $('#canvas').css("display", "none")
+      $('#video').css("display", "block")
+    }
+  }
+
+
   // 人脸采集
   function faceGather() {
-    const faceImgBase64 = getFaceImgBase64();
-    console.log(faceImgBase64);
+    // console.log(faceImgBase64);
+    var name = document.getElementsByName('name')[0].value
+    var phone = document.getElementsByName('phone')[0].value
+    var phoneReg = /^(?:(?:\+|00)86)?1(?:(?:3[\d])|(?:4[5-79])|(?:5[0-35-9])|(?:6[5-7])|(?:7[0-8])|(?:8[\d])|(?:9[189]))\d{8}$/
+    if (!name) {
+      popShow("请填写姓名")
+      return;
+    }
+
+    if (!phone) {
+      popShow("请填写手机号")
+      return;
+    }
+
+    if (!phoneReg.test(phone)) {
+      popShow("请填正确的联系方式")
+      return;
+    }
+
+    if (!photoImg) {
+      popShow("未采集人脸")
+      return;
+    }
+
+    axios.post('https://aip.baidubce.com/rest/2.0/face/v3/faceset/user/add?access_token=24.fbe7c4d54f625204dde6181028035c48.2592000.1667978731.282335-27344413', {
+      image: faceImgBase64,
+      image_type: 'BASE64',
+      group_id: "20221009",
+      user_id: phone,
+      user_info: name,
+      quality_control: "LOW",
+    }).then(function (res) {
+      console.log(res, "注册成功");
+      photoImg = ''
+      if (res.data.result) {
+        popShow("注册成功")
+      } else {
+        popShow(res.data.error_msg)
+      }
+    }).catch(function (error) {
+      console.log(error, "注册失败");
+      popShow("注册失败")
+    });
+  }
+
+  function popShow(text) {
+    document.getElementsByClassName('pop')[0].innerHTML = text
+    document.getElementsByClassName('pop')[0].style.display = 'block'
+    setTimeout(() => {
+      document.getElementsByClassName('pop')[0].style.display = 'none'
+    }, 2000)
   }
 </script>
 

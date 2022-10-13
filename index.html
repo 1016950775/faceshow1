@@ -13,7 +13,8 @@
     </script>
   <script src="https://cdn.bootcdn.net/ajax/libs/vConsole/3.0.0/vconsole.min.js" type="text/javascript"
     charset="utf-8"></script>
-  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <!-- <script src="https://unpkg.com/axios/dist/axios.min.js"></script> -->
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <style>
     * {
       margin: 0;
@@ -296,6 +297,7 @@
     function Submit() {
       var name = document.getElementsByName('name')[0].value
       var phone = document.getElementsByName('phone')[0].value
+      var phoneReg = /^(?:(?:\+|00)86)?1(?:(?:3[\d])|(?:4[5-79])|(?:5[0-35-9])|(?:6[5-7])|(?:7[0-8])|(?:8[\d])|(?:9[189]))\d{8}$/
       if (!name) {
         popShow("请填写姓名")
         return;
@@ -303,6 +305,11 @@
 
       if (!phone) {
         popShow("请填写手机号")
+        return;
+      }
+
+      if (!phoneReg.test(phone)) {
+        popShow("请填正确的联系方式")
         return;
       }
 
