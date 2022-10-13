@@ -54,7 +54,7 @@
       bject-position: center center;
     }
 
-    canvas{
+    canvas {
       z-index: 99;
     }
 
@@ -153,6 +153,20 @@
       /* Safari 和 Chrome */
       -moz-transform: rotateY(180deg);
     }
+
+    .image {
+      width: 100%;
+      height: 100%;
+      display: none;
+      position: fixed;
+      top: 0;
+      right: 0;
+      left: 0;
+    }
+    .image img{
+      width: 100%;
+      height: 100%;
+    }
   </style>
 </head>
 
@@ -160,8 +174,11 @@
   <div class="mui-content">
     <video id="video" width="300" height="300" preload autoplay loop muted playsinline webkit-playsinline="true"
       x5-video-player-type="h5-page"></video>
-    <canvas id="canvas" width="300" height="300" onclick="changeCanvas()"></canvas>
+    <canvas id="canvas" width="300" height="300"></canvas>
     <!-- <div id="mask"></div> -->
+    <div class="image">
+      <img :src="photo" alt="预览图" onclick="changeCanvas()">
+    </div>
 
     <div class="from">
       <input type="text" placeholder="请输入姓名" name="name">
@@ -183,6 +200,8 @@
     var windowHeight = 0
 
     var tracker = null
+
+    var photo = ''
     $(function () {
       console.log(123123123)
 
@@ -203,11 +222,11 @@
       var time = 3000;
       tracker = new tracking.ObjectTracker('face');
       //   设置识别的放大比例
-      tracker.setInitialScale(1);
+      tracker.setInitialScale(5);
       //   设置步长
-      tracker.setStepSize(2);
+      tracker.setStepSize(1);
       //   边缘密度
-      tracker.setEdgesDensity(0.1);
+      tracker.setEdgesDensity(0.08);
       //   启动摄像头，并且识别视频内容
       var trackerTask = tracking.track('#video', tracker, {
         camera: true
@@ -232,12 +251,18 @@
             //console.log(rect.x, rect.width, rect.y, rect.height);
           });
           if (flag) {
-            if(!faceData.length){
+            // if(!faceData.length){
+            //   console.log("拍照");
+            //   context.drawImage(video, 0, 0, windowWidth, windowHeight);
+            //   saveAsLocalImage();
+            // }
+
+            if (!photo) {
               console.log("拍照");
               context.drawImage(video, 0, 0, windowWidth, windowHeight);
               saveAsLocalImage();
             }
-            
+
             // context.clearRect(0, 0, windowWidth, windowHeight);
             // flag = false;
             // setTimeout(function () {
@@ -259,10 +284,13 @@
       // var image = myCanvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
 
       var image = myCanvas.toDataURL("image/jpeg").split(',')[1]
+      var image1 = myCanvas.toDataURL("image/jpeg")
       // window.location.href = image; // it will save locally  
       // create temporary link  
       popShow("已拍照")
-      faceData.push(image)
+      // faceData.push(image)
+      photo = image
+      document.getElementsByClassName('image')[0].style.display = 'block'
       // return;
       // var tmpLink = document.createElement('a');
       // tmpLink.download = 'image.png'; // set the name of the download file 
@@ -275,8 +303,9 @@
     }
 
     // 重拍
-    function changeCanvas(){
-
+    function changeCanvas() {
+      document.getElementsByClassName('image')[0].style.display = 'none'
+      photo = ''
     }
 
     // 注册
@@ -293,12 +322,18 @@
         return;
       }
 
-      if (!faceData.length) {
+      // if (!faceData.length) {
+      //   popShow("暂无抓拍的照片")
+      //   return;
+      // }
+
+      if (!photo) {
         popShow("暂无抓拍的照片")
         return;
       }
 
-      axiospost(faceData.toString(), name, phone)
+      // axiospost(faceData.toString(), name, phone)
+      axiospost(photo, name, phone)
     }
 
     function popShow(text) {
@@ -336,7 +371,8 @@
         quality_control: "LOW",
       }).then(function (res) {
         console.log(res, "注册成功");
-        faceData = []
+        // faceData = []
+        phone = ""
         if (res.data.result) {
           popShow("注册成功")
         } else {
