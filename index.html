@@ -262,9 +262,12 @@
             // }
 
             if (!photo) {
-              console.log("拍照");
-              context.drawImage(video, 0, 0, windowWidth, windowHeight);
-              saveAsLocalImage();
+              setTimeout(function () {
+                console.log("拍照");
+                context.drawImage(video, 0, 0, windowWidth, windowHeight);
+                saveAsLocalImage();
+              }, 1000);
+
             }
 
             // context.clearRect(0, 0, windowWidth, windowHeight);
