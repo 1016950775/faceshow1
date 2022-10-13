@@ -162,6 +162,7 @@
       top: 0;
       right: 0;
       left: 0;
+      z-index: 99;
     }
     .image img{
       width: 100%;
@@ -291,7 +292,6 @@
       // faceData.push(image)
       photo = image1
       document.getElementsByClassName('image')[0].style.display = 'block'
-      document.getElementById('video').style.display = 'none'
       // return;
       // var tmpLink = document.createElement('a');
       // tmpLink.download = 'image.png'; // set the name of the download file 
@@ -305,9 +305,8 @@
 
     // 重拍
     function changeCanvas() {
-      document.getElementsByClassName('image')[0].style.display = 'none'
-      document.getElementById('video').style.display = 'block'
-      photo = ''
+      // document.getElementsByClassName('image')[0].style.display = 'none'
+      // photo = ''
     }
 
     // 注册
