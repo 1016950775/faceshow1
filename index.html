@@ -176,10 +176,10 @@
   <div class="mui-content">
     <video id="video" width="300" height="300" preload autoplay loop muted playsinline webkit-playsinline="true"
       x5-video-player-type="h5-page"></video>
-    <canvas id="canvas" width="300" height="300"></canvas>
+    <canvas id="canvas" width="300" height="300" onclick="changeCanvas()"></canvas>
     <!-- <div id="mask"></div> -->
     <div class="image">
-      <img :src="photo" alt="预览图" onclick="changeCanvas()">
+      <img :src="photo" alt="预览图">
     </div>
 
     <div class="from">
@@ -285,15 +285,15 @@
       // here is the most important part because if you dont replace you will get a DOM 18 exception.  
       // var image = myCanvas.toDataURL("image/png").replace("image/png", "image/octet-stream;Content-Disposition: attachment;filename=foobar.png");  
 
-      var image1 = myCanvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+      // var image1 = myCanvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
 
       var image = myCanvas.toDataURL("image/jpeg").split(',')[1]
       // window.location.href = image; // it will save locally  
       // create temporary link  
       popShow("已拍照")
       // faceData.push(image)
-      photo = image1
-      console.log(image1, "获取的地址")
+      photo = image
+      // console.log(image1, "获取的地址")
       // document.getElementsByClassName('image')[0].style.display = 'block'
       // return;
       // var tmpLink = document.createElement('a');
@@ -309,7 +309,8 @@
     // 重拍
     function changeCanvas() {
       // document.getElementsByClassName('image')[0].style.display = 'none'
-      // photo = ''
+      if (!photo) return
+      photo = ''
     }
 
     // 注册
